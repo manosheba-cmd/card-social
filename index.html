@@ -8,6 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- استدعاء Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <style>
   :root{
     --ink:#0F111A;
@@ -35,7 +40,7 @@
   h1,h2,h3,.disp{font-family:'Cairo', sans-serif;}
   .hidden{display:none !important;}
 
-  /* ============ ADMIN ============ */
+  /* ADMIN */
   .wrap{max-width:1120px;margin:0 auto;padding:24px 16px 80px;}
   .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:14px;}
   .brandmark{display:flex;align-items:center;gap:10px;}
@@ -167,7 +172,7 @@
     border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px;
   }
 
-  /* ============ LOCK SCREEN ============ */
+  /* LOCK SCREEN */
   .lock-shell{min-height:85vh;display:flex;align-items:center;justify-content:center;padding:16px;}
   .lock-box{max-width:340px;width:100%;background:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:28px 22px;text-align:center;}
   .lock-box i.big{font-size:26px;color:var(--brass);margin-bottom:12px;display:block;}
@@ -180,7 +185,7 @@
   .pin-input:focus{border-color:var(--brass);}
   .lock-err{color:var(--coral);font-size:12px;min-height:16px;margin-bottom:8px;}
 
-  /* ============ PUBLIC PAGE (Professional Glassmorphism) ============ */
+  /* PUBLIC PAGE */
   .public-shell {
     min-height: 100vh;
     display: flex;
@@ -194,7 +199,6 @@
     position: relative;
     overflow: hidden;
   }
-
   .public-shell::before {
     content: "";
     position: absolute;
@@ -205,7 +209,6 @@
     top: -40px; right: -40px;
     border-radius: 50%;
   }
-
   .public-card-container {
     max-width: 420px;
     width: 100%;
@@ -220,145 +223,44 @@
     position: relative;
     z-index: 1;
   }
-
-  .pub-logo-wrap {
-    width: 96px;
-    height: 96px;
-    margin: 0 auto 16px;
-  }
-
+  .pub-logo-wrap { width: 96px; height: 96px; margin: 0 auto 16px; }
   .pub-logo {
-    width: 100%;
-    height: 100%;
-    border-radius: 26px;
+    width: 100%; height: 100%; border-radius: 26px;
     background: linear-gradient(135deg, var(--brass-soft), var(--brass));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cairo';
-    font-weight: 900;
-    font-size: 36px;
-    color: var(--ink);
-    overflow: hidden;
-    box-shadow: 0 10px 20px -5px rgba(201, 162, 39, 0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cairo'; font-weight: 900; font-size: 36px; color: var(--ink);
+    overflow: hidden; box-shadow: 0 10px 20px -5px rgba(201, 162, 39, 0.4);
     border: 2px solid rgba(255, 255, 255, 0.2);
   }
   .pub-logo img { width: 100%; height: 100%; object-fit: cover; }
-
-  .pub-name {
-    font-size: 23px;
-    font-weight: 900;
-    margin: 0 0 6px;
-    color: var(--cream);
-  }
-
-  .pub-tagline {
-    color: var(--cream-dim);
-    font-size: 13.5px;
-    margin: 0 0 20px;
-    line-height: 1.6;
-  }
-
-  .pub-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 24px;
-  }
-  
+  .pub-name { font-size: 23px; font-weight: 900; margin: 0 0 6px; color: var(--cream); }
+  .pub-tagline { color: var(--cream-dim); font-size: 13.5px; margin: 0 0 20px; line-height: 1.6; }
+  .pub-actions { display: flex; gap: 10px; justify-content: center; margin-bottom: 24px; }
   .pub-btn-action {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: rgba(253, 248, 240, 0.05);
-    border: 1px solid rgba(253, 248, 240, 0.12);
-    color: var(--cream);
-    padding: 10px 12px;
-    border-radius: 14px;
-    font-family: 'Tajawal', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: rgba(253, 248, 240, 0.05); border: 1px solid rgba(253, 248, 240, 0.12);
+    color: var(--cream); padding: 10px 12px; border-radius: 14px;
+    font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;
   }
-
-  .pub-btn-action:hover {
-    background: rgba(201, 162, 39, 0.15);
-    border-color: var(--brass-soft);
-    color: var(--brass-soft);
-  }
-
-  .tile-list {
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
-  }
-
+  .pub-btn-action:hover { background: rgba(201, 162, 39, 0.15); border-color: var(--brass-soft); color: var(--brass-soft); }
+  .tile-list { display: flex; flex-direction: column; gap: 11px; }
   .pub-tile {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(33, 37, 56, 0.55);
-    border: 1px solid rgba(253, 248, 240, 0.08);
-    border-radius: 16px;
-    padding: 12px 14px;
-    text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(33, 37, 56, 0.55); border: 1px solid rgba(253, 248, 240, 0.08);
+    border-radius: 16px; padding: 12px 14px; text-decoration: none; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .pub-tile:hover {
-    transform: translateY(-2px);
-    background: rgba(33, 37, 56, 0.9);
-    border-color: rgba(201, 162, 39, 0.35);
-  }
-
-  .pub-tile .tile-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .pub-tile .tile-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 19px;
-    flex-none: true;
-  }
-
-  .pub-tile .tile-label {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--cream);
-  }
-
-  .pub-tile .tile-arrow {
-    font-size: 12px;
-    color: var(--cream-dim);
-    transition: transform 0.2s ease;
-  }
-
-  .pub-tile:hover .tile-arrow {
-    transform: translateX(-3px);
-    color: var(--brass-soft);
-  }
-
-  .pub-footer {
-    margin-top: 26px;
-    color: var(--cream-dim);
-    font-size: 11px;
-    opacity: 0.6;
-  }
+  .pub-tile:hover { transform: translateY(-2px); background: rgba(33, 37, 56, 0.9); border-color: rgba(201, 162, 39, 0.35); }
+  .pub-tile .tile-left { display: flex; align-items: center; gap: 12px; }
+  .pub-tile .tile-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-none: true; }
+  .pub-tile .tile-label { font-size: 14px; font-weight: 700; color: var(--cream); }
+  .pub-tile .tile-arrow { font-size: 12px; color: var(--cream-dim); transition: transform 0.2s ease; }
+  .pub-tile:hover .tile-arrow { transform: translateX(-3px); color: var(--brass-soft); }
+  .pub-footer { margin-top: 26px; color: var(--cream-dim); font-size: 11px; opacity: 0.6; }
 </style>
 </head>
 <body>
 
-<!-- ============ LOCK SCREEN ============ -->
+<!-- LOCK SCREEN -->
 <div id="view-lock" class="lock-shell hidden">
   <div class="lock-box">
     <i class="fa-solid fa-lock big"></i>
@@ -371,7 +273,7 @@
   </div>
 </div>
 
-<!-- ============ ADMIN ============ -->
+<!-- ADMIN -->
 <div id="view-dash" class="wrap hidden">
   <div class="topbar">
     <div class="brandmark"><span class="mark"><i class="fa-solid fa-id-badge"></i></span><span>لوحة التحكم</span></div>
@@ -382,7 +284,6 @@
 
   <div class="grid">
     <div>
-      <!-- Analytics Panel -->
       <div class="panel">
         <p class="eyebrow">إحصائيات البطاقة</p>
         <h2>التفاعل والزيارات</h2>
@@ -399,7 +300,6 @@
         </div>
       </div>
 
-      <!-- Identity Panel -->
       <div class="panel">
         <div class="field-block">
           <p class="eyebrow">هوية البراند</p>
@@ -434,12 +334,11 @@
         </div>
 
         <div class="save-bar">
-          <button class="primary" onclick="saveProfile()">حفظ البيانات</button>
+          <button class="primary" onclick="saveProfile()">حفظ البيانات سحابياً</button>
           <span class="status" id="save-status"></span>
         </div>
       </div>
 
-      <!-- Security Panel -->
       <div class="panel">
         <p class="eyebrow">الأمان</p>
         <h2>الرقم السري للوحة</h2>
@@ -452,7 +351,6 @@
       </div>
     </div>
 
-    <!-- Preview Card -->
     <div class="card-outer">
       <div class="idcard" id="card">
         <div class="hole"></div>
@@ -476,7 +374,7 @@
   </div>
 </div>
 
-<!-- ============ PUBLIC PAGE ============ -->
+<!-- PUBLIC PAGE -->
 <div id="view-public" class="public-shell hidden">
   <div class="public-card-container">
     <div class="pub-logo-wrap">
@@ -491,7 +389,7 @@
     </div>
 
     <div class="tile-list" id="pub-icons">
-      <div class="empty-note">مفيش روابط متاحة دلوقتي</div>
+      <div class="empty-note">جاري تحميل البيانات...</div>
     </div>
 
     <p class="pub-footer">بطاقتي © 2026</p>
@@ -499,6 +397,13 @@
 </div>
 
 <script>
+// إعدادات Firebase الخاصة بمشروعك cardid-f3d59
+const firebaseConfig = {
+  databaseURL: "https://cardid-f3d59-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 const PLATFORMS = [
   {id:'instagram', label:'انستجرام', icon:'fa-brands fa-instagram', color:'#E1306C', dark:false},
   {id:'facebook', label:'فيسبوك', icon:'fa-brands fa-facebook-f', color:'#1877F2', dark:false},
@@ -511,16 +416,12 @@ const PLATFORMS = [
   {id:'linkedin', label:'لينكدإن', icon:'fa-brands fa-linkedin-in', color:'#0A66C2', dark:false},
 ];
 
-let profile = { name:'', tagline:'', phone:'', logo:'', links:[], views:0 };
+let profile = { name:'', tagline:'', phone:'', logo:'', links:[], views:0, pin:'1234' };
 let flipped = false;
 
 function iconColor(dark){ return dark ? '#12141F' : '#F3EEE2'; }
+function getPublicUrl(){ return window.location.origin + window.location.pathname; }
 
-function getPublicUrl(){
-  return window.location.origin + window.location.pathname;
-}
-
-/* ---------- routing ---------- */
 function route(){
   const hash = window.location.hash;
   if(hash === '#admin'){
@@ -539,19 +440,10 @@ function goPublic(){ window.location.hash = ''; route(); }
 function goAdmin(){ window.location.hash = '#admin'; route(); }
 window.addEventListener('hashchange', route);
 
-/* ---------- pin gate & storage ---------- */
 function checkPinThenShowAdmin(){
-  const savedPin = localStorage.getItem('admin-pin');
-
-  if(!savedPin){
-    document.getElementById('lock-title').textContent = 'اعمل رقم سري للوحة التحكم';
-    document.getElementById('lock-desc').textContent = 'أول مرة؟ اختار رقم سري (4 أرقام على الأقل) عشان تحمي لوحة التحكم.';
-    document.getElementById('lock-btn').textContent = 'حفظ وإنشاء';
-  } else {
-    document.getElementById('lock-title').textContent = 'لوحة التحكم مقفولة';
-    document.getElementById('lock-desc').textContent = 'ادخل الرقم السري للدخول على اللوحة.';
-    document.getElementById('lock-btn').textContent = 'دخول';
-  }
+  document.getElementById('lock-title').textContent = 'لوحة التحكم مقفولة';
+  document.getElementById('lock-desc').textContent = 'ادخل الرقم السري للدخول على اللوحة.';
+  document.getElementById('lock-btn').textContent = 'دخول';
   document.getElementById('lock-err').textContent = '';
   document.getElementById('pin-field').value = '';
   showOnly('view-lock');
@@ -560,21 +452,16 @@ function checkPinThenShowAdmin(){
 function submitPin(){
   const val = document.getElementById('pin-field').value.trim();
   const errEl = document.getElementById('lock-err');
-  const savedPin = localStorage.getItem('admin-pin');
-
-  if(val.length < 4){
-    errEl.textContent = 'الرقم لازم يكون 4 أرقام على الأقل';
-    return;
-  }
   
-  if(!savedPin){
-    localStorage.setItem('admin-pin', val);
-    showAdmin();
-  } else if(val === savedPin){
-    showAdmin();
-  } else {
-    errEl.textContent = 'الرقم غلط، حاول تاني';
-  }
+  db.ref('card_data').once('value').then(snapshot => {
+    const data = snapshot.val() || {};
+    const correctPin = data.pin || '1234';
+    if(val === correctPin){
+      showAdmin();
+    } else {
+      errEl.textContent = 'الرقم السري خاطئ!';
+    }
+  });
 }
 
 function changePin(){
@@ -585,26 +472,21 @@ function changePin(){
     status.style.color = 'var(--coral)';
     return;
   }
-  localStorage.setItem('admin-pin', val);
+  profile.pin = val;
+  db.ref('card_data/pin').set(val);
   status.textContent = 'تم تغيير الرقم السري بنجاح!';
   status.style.color = 'var(--teal)';
   document.getElementById('new-pin-input').value = '';
   setTimeout(()=> status.textContent = '', 3000);
 }
 
-document.addEventListener('keydown', e=>{
-  if(e.key === 'Enter' && !document.getElementById('view-lock').classList.contains('hidden')){
-    submitPin();
-  }
-});
-
 function showAdmin(){
-  loadProfile();
-  renderQR();
-  showOnly('view-dash');
+  loadProfileFromFirebase(() => {
+    renderQR();
+    showOnly('view-dash');
+  });
 }
 
-/* ---------- platform select + rows ---------- */
 function initPlatformSelect(){
   const sel = document.getElementById('new-platform');
   PLATFORMS.forEach(p=>{
@@ -695,17 +577,13 @@ function addCustomRow(){
   renderCardPreview();
 }
 
-function initials(name){
-  const trimmed = (name||'').trim();
-  return trimmed ? trimmed.slice(0,1) : '؟';
-}
+function initials(name){ return (name||'').trim() ? name.trim().slice(0,1) : '؟'; }
 
-/* ---------- logo ---------- */
 function onLogoChosen(e){
   const file = e.target.files[0];
   if(!file) return;
-  if(file.size > 1500000){
-    alert('اختار صورة أصغر من 1.5 ميجا لو سمحت');
+  if(file.size > 800000){
+    alert('برجاء اختيار صورة حجمها أقل من 800 كاريابايت');
     return;
   }
   const reader = new FileReader();
@@ -726,11 +604,9 @@ function renderLogoPreview(){
   el.innerHTML = profile.logo ? `<img src="${profile.logo}">` : '<i class="fa-solid fa-image"></i>';
 }
 
-/* ---------- admin preview card & stats ---------- */
 function renderCardPreview(){
   document.getElementById('card-name').textContent = profile.name || 'اسم البراند';
-  const avatarEl = document.getElementById('avatar-init');
-  avatarEl.innerHTML = profile.logo ? `<img src="${profile.logo}">` : initials(profile.name);
+  document.getElementById('avatar-init').innerHTML = profile.logo ? `<img src="${profile.logo}">` : initials(profile.name);
 
   const active = profile.links.filter(l=>l.enabled && l.url);
   const iconsHtml = active.length ? active.map(l=>{
@@ -754,9 +630,7 @@ function renderQR(){
   document.getElementById('qr-link').textContent = url;
   try{
     new QRCode(holder, { text: url, width:140, height:140, colorDark:'#12141F', colorLight:'#ffffff' });
-  }catch(e){
-    holder.innerHTML = '<span style="font-size:12px;color:var(--cream-dim)">تعذر توليد الباركود</span>';
-  }
+  }catch(e){}
 }
 
 function toggleFlip(){
@@ -768,52 +642,50 @@ function toggleFlip(){
     : '<i class="fa-solid fa-qrcode"></i> اعرض الباركود';
 }
 
-/* ---------- public page & clicks ---------- */
 function trackClick(idx){
   profile.links[idx].clicks = (profile.links[idx].clicks || 0) + 1;
-  localStorage.setItem('profile-links', JSON.stringify(profile));
+  db.ref('card_data/links/' + idx + '/clicks').set(profile.links[idx].clicks);
 }
 
 function renderPublicPage(){
-  loadProfileDataOnly();
-  
-  profile.views = (profile.views || 0) + 1;
-  localStorage.setItem('profile-links', JSON.stringify(profile));
+  db.ref('card_data').once('value').then(snapshot => {
+    const data = snapshot.val() || {};
+    profile = data;
+    profile.links = profile.links || [];
+    
+    // زيادة عدد المشاهدات سحابياً
+    const newViews = (profile.views || 0) + 1;
+    db.ref('card_data/views').set(newViews);
+    
+    document.getElementById('pub-name').textContent = profile.name || 'اسم البراند';
+    document.getElementById('pub-logo').innerHTML = profile.logo ? `<img src="${profile.logo}">` : initials(profile.name);
 
-  document.getElementById('pub-name').textContent = profile.name || 'اسم البراند';
-  const logoEl = document.getElementById('pub-logo');
-  logoEl.innerHTML = profile.logo ? `<img src="${profile.logo}">` : initials(profile.name);
+    const tagEl = document.getElementById('pub-tagline');
+    if(profile.tagline){ tagEl.textContent = profile.tagline; tagEl.classList.remove('hidden'); }
+    else { tagEl.classList.add('hidden'); }
 
-  const tagEl = document.getElementById('pub-tagline');
-  if(profile.tagline){ tagEl.textContent = profile.tagline; tagEl.classList.remove('hidden'); }
-  else { tagEl.classList.add('hidden'); }
-
-  const active = (profile.links||[]).filter(l=>l.enabled && l.url);
-  const tilesHtml = active.length ? active.map(l=>{
-    const originalIdx = profile.links.findIndex(link => link.platformId === l.platformId);
-    const plat = PLATFORMS.find(p=>p.id===l.platformId);
-    const color = plat ? plat.color : '#C9A227';
-    const iconClass = plat ? plat.icon : 'fa-solid fa-link';
-    const fg = plat ? iconColor(plat.dark) : '#12141F';
-    return `<a class="pub-tile" href="${l.url}" target="_blank" rel="noopener" onclick="trackClick(${originalIdx})">
-      <div class="tile-left">
-        <span class="tile-icon" style="background:${color};color:${fg};"><i class="${iconClass}"></i></span>
-        <span class="tile-label">${l.label}</span>
-      </div>
-      <span class="tile-arrow"><i class="fa-solid fa-chevron-left"></i></span>
-    </a>`;
-  }).join('') : '<div class="empty-note">مفيش روابط متاحة دلوقتي</div>';
-  document.getElementById('pub-icons').innerHTML = tilesHtml;
+    const active = profile.links.filter(l=>l.enabled && l.url);
+    const tilesHtml = active.length ? active.map(l=>{
+      const originalIdx = profile.links.findIndex(link => link.platformId === l.platformId);
+      const plat = PLATFORMS.find(p=>p.id===l.platformId);
+      const color = plat ? plat.color : '#C9A227';
+      const iconClass = plat ? plat.icon : 'fa-solid fa-link';
+      const fg = plat ? iconColor(plat.dark) : '#12141F';
+      return `<a class="pub-tile" href="${l.url}" target="_blank" rel="noopener" onclick="trackClick(${originalIdx})">
+        <div class="tile-left">
+          <span class="tile-icon" style="background:${color};color:${fg};"><i class="${iconClass}"></i></span>
+          <span class="tile-label">${l.label}</span>
+        </div>
+        <span class="tile-arrow"><i class="fa-solid fa-chevron-left"></i></span>
+      </a>`;
+    }).join('') : '<div class="empty-note">مفيش روابط متاحة دلوقتي</div>';
+    document.getElementById('pub-icons').innerHTML = tilesHtml;
+  });
 }
 
-/* ---------- Share & vCard ---------- */
 function sharePage(){
   if(navigator.share){
-    navigator.share({
-      title: profile.name || 'بطاقتي',
-      text: profile.tagline || 'شاهد جميع حساباتي وتواصل معي!',
-      url: getPublicUrl()
-    }).catch(()=>{});
+    navigator.share({ title: profile.name || 'بطاقتي', text: profile.tagline || '', url: getPublicUrl() }).catch(()=>{});
   } else {
     navigator.clipboard.writeText(getPublicUrl());
     alert('تم نسخ رابط البطاقة بنجاح!');
@@ -824,16 +696,7 @@ function downloadVCard(){
   const name = profile.name || 'جهة اتصال';
   const phone = profile.phone || '';
   const note = profile.tagline || '';
-  
-  const vcard = 
-`BEGIN:VCARD
-VERSION:3.0
-FN:${name}
-TEL;TYPE=CELL:${phone}
-NOTE:${note}
-URL:${getPublicUrl()}
-END:VCARD`;
-
+  const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL;TYPE=CELL:${phone}\nNOTE:${note}\nURL:${getPublicUrl()}\nEND:VCARD`;
   const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -844,47 +707,42 @@ END:VCARD`;
   document.body.removeChild(a);
 }
 
-/* ---------- save / load ---------- */
 function saveProfile(){
   profile.name = document.getElementById('profile-name').value.trim();
   profile.tagline = document.getElementById('profile-tagline').value.trim();
   profile.phone = document.getElementById('profile-phone').value.trim();
   
   const statusEl = document.getElementById('save-status');
-  statusEl.innerHTML = 'جاري الحفظ...';
+  statusEl.innerHTML = 'جاري الحفظ سحابياً...';
   
-  localStorage.setItem('profile-links', JSON.stringify(profile));
-  
-  statusEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> تم الحفظ';
-  statusEl.className = 'status ok';
-  renderCardPreview();
-  setTimeout(()=>{ statusEl.textContent=''; }, 3000);
+  db.ref('card_data').set(profile, (error) => {
+    if(!error){
+      statusEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> تم الحفظ على Firebase!';
+      statusEl.className = 'status ok';
+      renderCardPreview();
+    } else {
+      statusEl.textContent = 'حدث خطأ في الحفظ!';
+    }
+    setTimeout(()=>{ statusEl.textContent=''; }, 3000);
+  });
 }
 
-function loadProfileDataOnly(){
-  const saved = localStorage.getItem('profile-links');
-  if(saved){
-    try {
-      const loaded = JSON.parse(saved);
-      profile.name = loaded.name || '';
-      profile.tagline = loaded.tagline || '';
-      profile.phone = loaded.phone || '';
-      profile.logo = loaded.logo || '';
-      profile.links = loaded.links || [];
-      profile.views = loaded.views || 0;
-    } catch(e){}
-  }
-}
-
-function loadProfile(){
-  loadProfileDataOnly();
-  ensureLinksHaveAllPlatforms();
-  document.getElementById('profile-name').value = profile.name || '';
-  document.getElementById('profile-tagline').value = profile.tagline || '';
-  document.getElementById('profile-phone').value = profile.phone || '';
-  renderLogoPreview();
-  renderDashboardRows();
-  renderCardPreview();
+function loadProfileFromFirebase(callback){
+  db.ref('card_data').once('value').then(snapshot => {
+    const data = snapshot.val();
+    if(data){
+      profile = data;
+      profile.links = profile.links || [];
+    }
+    ensureLinksHaveAllPlatforms();
+    document.getElementById('profile-name').value = profile.name || '';
+    document.getElementById('profile-tagline').value = profile.tagline || '';
+    document.getElementById('profile-phone').value = profile.phone || '';
+    renderLogoPreview();
+    renderDashboardRows();
+    renderCardPreview();
+    if(callback) callback();
+  });
 }
 
 initPlatformSelect();
