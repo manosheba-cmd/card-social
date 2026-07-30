@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بطاقتي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --ink:#0F111A;
+    --ink-2:#161926;
+    --ink-3:#212538;
+    --brass:#C9A227;
+    --brass-soft:#E7C766;
+    --cream:#F3EEE2;
+    --cream-dim:#9E9B90;
+    --teal:#2C6E63;
+    --coral:#E1613D;
+    --line:rgba(253,248,240,0.08);
+    --line-strong:rgba(253,248,240,0.18);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Tajawal', sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3,.disp{font-family:'Cairo', sans-serif;}
+  .hidden{display:none !important;}
+
+  /* ============ ADMIN ============ */
+  .wrap{max-width:1120px;margin:0 auto;padding:32px 22px 90px;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px;flex-wrap:wrap;gap:14px;}
+  .brandmark{display:flex;align-items:center;gap:10px;}
+  .brandmark .mark{
+    width:34px;height:34px;border-radius:10px;
+    background:linear-gradient(140deg,var(--brass-soft),var(--brass));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Cairo';font-weight:900;color:var(--ink);font-size:16px;
+  }
+  .brandmark span{font-family:'Cairo';font-weight:900;font-size:21px;letter-spacing:0.3px;}
+  .admin-nav{display:flex;align-items:center;gap:10px;}
+
+  .grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:26px;align-items:start;}
+  @media(max-width:880px){.grid{grid-template-columns:1fr;}}
+
+  .panel{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:24px;}
+  .panel h2{margin:0 0 4px;font-size:18px;font-weight:700;}
+  .panel .sub{color:var(--cream-dim);font-size:13px;margin:0 0 20px;line-height:1.6;}
+  .eyebrow{font-size:11px;letter-spacing:0.06em;color:var(--brass);font-weight:700;margin:0 0 6px;text-transform:uppercase;}
+  .field-block{margin-bottom:22px;}
+  .field-block:last-child{margin-bottom:0;}
+  
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:10px;}
+  .stat-box{background:var(--ink);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;}
+  .stat-box .num{font-size:24px;font-family:'Cairo';font-weight:900;color:var(--brass);}
+  .stat-box .lbl{font-size:12px;color:var(--cream-dim);}
+
+  .name-input{
+    width:100%;background:var(--ink);border:1px solid var(--line);
+    border-radius:12px;color:var(--cream);font-family:'Tajawal';font-weight:500;
+    font-size:15px;padding:12px 14px;outline:none;transition:.15s;
+  }
+  .name-input:focus{border-color:var(--brass);}
+  textarea.name-input{resize:vertical;min-height:44px;font-family:'Tajawal';}
+
+  .logo-row{display:flex;align-items:center;gap:14px;}
+  .logo-preview{
+    width:56px;height:56px;border-radius:14px;background:var(--ink-3);
+    border:1px dashed var(--line-strong);display:flex;align-items:center;justify-content:center;
+    overflow:hidden;flex:none;color:var(--cream-dim);font-size:20px;
+  }
+  .logo-preview img{width:100%;height:100%;object-fit:cover;}
+  .logo-btns{display:flex;gap:8px;}
+
+  .row{
+    display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;
+    border:1px solid var(--line);margin-bottom:9px;background:var(--ink-3);transition:border-color .15s;
+  }
+  .row:has(.enable-toggle:checked){border-color:var(--line-strong);}
+  .row .badge{width:38px;height:38px;min-width:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .row-fields{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0;}
+  .row-fields .name-row{display:flex;align-items:center;justify-content:space-between;}
+  .row-fields .name{font-weight:700;font-size:13px;color:var(--cream);}
+  .row-fields .clicks{font-size:11px;color:var(--brass-soft);background:rgba(201,162,39,0.1);padding:2px 6px;border-radius:6px;}
+  .row input[type=text], .row input[type=url]{
+    width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);
+    color:var(--cream-dim);font-family:'Tajawal';font-size:13.5px;padding:3px 1px;outline:none;transition:.15s;
+  }
+  .row input:focus{border-bottom-color:var(--brass);color:var(--cream);}
+  
+  .reorder-btns{display:flex;flex-direction:column;gap:2px;}
+  .reorder-btn{background:none;border:none;color:var(--cream-dim);cursor:pointer;font-size:11px;padding:2px 4px;}
+  .reorder-btn:hover{color:var(--brass);}
+
+  .switch{position:relative;width:40px;height:23px;flex:none;}
+  .switch input{opacity:0;width:0;height:0;position:absolute;}
+  .slider{position:absolute;inset:0;background:#33364a;border-radius:999px;cursor:pointer;transition:.2s;}
+  .slider:before{content:"";position:absolute;height:17px;width:17px;left:3px;top:3px;background:var(--cream);border-radius:50%;transition:.2s;}
+  .switch input:checked + .slider{background:var(--teal);}
+  .switch input:checked + .slider:before{transform:translateX(-17px);}
+  .del-btn{background:none;border:none;color:var(--cream-dim);cursor:pointer;font-size:15px;padding:6px 7px;border-radius:8px;line-height:1;flex:none;transition:.15s;}
+  .del-btn:hover{color:var(--coral);background:rgba(225,97,61,0.12);}
+
+  .add-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+  select, .add-row input{
+    background:var(--ink);color:var(--cream);border:1px solid var(--line);
+    border-radius:11px;padding:10px 13px;font-family:'Tajawal';font-size:13px;outline:none;transition:.15s;
+  }
+  select:focus, .add-row input:focus{border-color:var(--brass);}
+  select{flex:none;}
+  .add-row input{flex:1;min-width:150px;}
+
+  button.primary{
+    background:var(--brass);color:var(--ink);border:none;font-family:'Cairo';font-weight:700;font-size:14px;
+    padding:12px 26px;border-radius:12px;cursor:pointer;transition:.15s;
+  }
+  button.primary:hover{background:var(--brass-soft);transform:translateY(-1px);}
+  button.ghost{
+    background:transparent;color:var(--cream);border:1px solid var(--line-strong);font-family:'Tajawal';font-weight:700;
+    font-size:13px;padding:10px 18px;border-radius:12px;cursor:pointer;transition:.15s;
+  }
+  button.ghost:hover{border-color:var(--brass);color:var(--brass-soft);}
+  button.small{padding:7px 13px;font-size:12px;}
+
+  .save-bar{display:flex;align-items:center;gap:14px;margin-top:22px;padding-top:20px;border-top:1px solid var(--line);}
+  .status{font-size:12.5px;color:var(--cream-dim);display:flex;align-items:center;gap:6px;}
+  .status.ok{color:var(--teal);}
+
+  .card-outer{position:sticky;top:22px;}
+  .idcard{
+    background:linear-gradient(165deg, var(--ink-3), var(--ink-2) 55%, var(--ink));
+    border:1px solid var(--line);border-radius:24px;padding:30px 24px 26px;text-align:center;position:relative;
+    overflow:hidden;box-shadow:0 20px 50px -20px rgba(0,0,0,0.5);
+  }
+  .idcard:before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--brass),var(--teal));}
+  .hole{width:38px;height:9px;border-radius:99px;background:var(--ink);border:1px solid var(--line);margin:0 auto 20px;}
+  .avatar{
+    width:72px;height:72px;border-radius:20px;margin:0 auto 14px;overflow:hidden;
+    background:radial-gradient(circle at 32% 28%, var(--brass-soft), var(--brass));
+    display:flex;align-items:center;justify-content:center;font-family:'Cairo';font-weight:900;font-size:26px;color:var(--ink);
+    box-shadow:0 8px 20px -6px rgba(201,162,39,0.5);
+  }
+  .avatar img{width:100%;height:100%;object-fit:cover;}
+  .idcard h3{margin:0 0 4px;font-size:19px;}
+  .idcard .role{color:var(--cream-dim);font-size:12.5px;margin:0 0 24px;}
+  .icon-grid{display:flex;flex-wrap:wrap;gap:11px;justify-content:center;margin-bottom:8px;}
+  .icon-btn{
+    width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    font-size:21px;text-decoration:none;transition:transform .18s, box-shadow .18s;box-shadow:0 4px 12px -4px rgba(0,0,0,0.4);
+  }
+  .icon-btn:hover{transform:translateY(-4px) scale(1.04);box-shadow:0 10px 20px -6px rgba(0,0,0,0.5);}
+  .empty-note{color:var(--cream-dim);font-size:13px;padding:26px 10px;line-height:1.7;}
+  .flip-btn{margin-top:20px;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;}
+  .qr-face{display:none;}
+  .qr-face.show{display:block;}
+  .front-face.hide{display:none;}
+  #qrcode{display:flex;justify-content:center;margin:16px 0 10px;}
+  #qrcode img, #qrcode canvas{border-radius:12px;background:#fff;padding:12px;}
+  .link-line{
+    font-size:11px;color:var(--cream-dim);word-break:break-all;background:var(--ink);
+    border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin-top:10px;
+  }
+
+  /* ============ LOCK SCREEN ============ */
+  .lock-shell{min-height:90vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .lock-box{max-width:340px;width:100%;background:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:32px 26px;text-align:center;}
+  .lock-box i.big{font-size:26px;color:var(--brass);margin-bottom:12px;display:block;}
+  .lock-box h2{margin:0 0 6px;font-size:18px;}
+  .lock-box p{color:var(--cream-dim);font-size:13px;margin:0 0 20px;line-height:1.7;}
+  .pin-input{
+    width:100%;text-align:center;letter-spacing:6px;font-size:20px;background:var(--ink);
+    border:1px solid var(--line);border-radius:12px;color:var(--cream);padding:12px;outline:none;margin-bottom:14px;
+  }
+  .pin-input:focus{border-color:var(--brass);}
+  .lock-err{color:var(--coral);font-size:12.5px;min-height:16px;margin-bottom:8px;}
+
+  /* ============ PROFESSIONAL PUBLIC PAGE (Glassmorphism) ============ */
+  .public-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 16px;
+    background: 
+      radial-gradient(circle at 10% 10%, rgba(201, 162, 39, 0.15), transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(44, 110, 99, 0.20), transparent 45%),
+      linear-gradient(135deg, #090B10 0%, #151824 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Glow accents in background */
+  .public-shell::before {
+    content: "";
+    position: absolute;
+    width: 300px; height: 300px;
+    background: var(--brass);
+    filter: blur(140px);
+    opacity: 0.12;
+    top: -50px; right: -50px;
+    border-radius: 50%;
+  }
+
+  .public-card-container {
+    max-width: 440px;
+    width: 100%;
+    background: rgba(22, 25, 38, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(243, 238, 226, 0.12);
+    border-radius: 28px;
+    padding: 36px 24px 30px;
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pub-logo-wrap {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 18px;
+  }
+
+  .pub-logo {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    background: linear-gradient(135deg, var(--brass-soft), var(--brass));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cairo';
+    font-weight: 900;
+    font-size: 38px;
+    color: var(--ink);
+    overflow: hidden;
+    box-shadow: 0 12px 25px -6px rgba(201, 162, 39, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+  .pub-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+  .pub-name {
+    font-size: 25px;
+    font-weight: 900;
+    margin: 0 0 6px;
+    letter-spacing: -0.2px;
+    color: var(--cream);
+  }
+
+  .pub-tagline {
+    color: var(--cream-dim);
+    font-size: 14px;
+    margin: 0 0 22px;
+    line-height: 1.6;
+    font-weight: 400;
+    padding: 0 10px;
+  }
+
+  /* Interactive Quick Actions */
+  .pub-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  
+  .pub-btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(253, 248, 240, 0.05);
+    border: 1px solid rgba(253, 248, 240, 0.12);
+    color: var(--cream);
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pub-btn-action:hover {
+    background: rgba(201, 162, 39, 0.15);
+    border-color: var(--brass-soft);
+    color: var(--brass-soft);
+    transform: translateY(-2px);
+  }
+
+  /* List of Professional Link Tiles */
+  .tile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pub-tile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(33, 37, 56, 0.5);
+    border: 1px solid rgba(253, 248, 240, 0.08);
+    border-radius: 16px;
+    padding: 12px 16px;
+    text-decoration: none;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .pub-tile:hover {
+    transform: translateY(-3px);
+    background: rgba(33, 37, 56, 0.9);
+    border-color: rgba(201, 162, 39, 0.35);
+    box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.4);
+  }
+
+  .pub-tile .tile-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .pub-tile .tile-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    flex-none: true;
+  }
+
+  .pub-tile .tile-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.1px;
+  }
+
+  .pub-tile .tile-arrow {
+    font-size: 12px;
+    color: var(--cream-dim);
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .pub-tile:hover .tile-arrow {
+    transform: translateX(-4px);
+    color: var(--brass-soft);
+  }
+
+  .pub-footer {
+    margin-top: 30px;
+    color: var(--cream-dim);
+    font-size: 11px;
+    opacity: 0.6;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOCK SCREEN ============ -->
+<div id="view-lock" class="lock-shell hidden">
+  <div class="lock-box">
+    <i class="fa-solid fa-lock big"></i>
+    <h2 id="lock-title">لوحة التحكم مقفولة</h2>
+    <p id="lock-desc">ادخل الرقم السري للدخول على اللوحة.</p>
+    <input type="password" inputmode="numeric" maxlength="6" class="pin-input" id="pin-field" placeholder="••••">
+    <div class="lock-err" id="lock-err"></div>
+    <button class="primary" style="width:100%;" id="lock-btn" onclick="submitPin()">دخول</button>
+    <p style="margin-top:16px;"><a href="#" onclick="goPublic();return false;" style="color:var(--cream-dim);font-size:12px;">الرجوع للصفحة العامة</a></p>
+  </div>
+</div>
+
+<!-- ============ ADMIN ============ -->
+<div id="view-dash" class="wrap hidden">
+  <div class="topbar">
+    <div class="brandmark"><span class="mark"><i class="fa-solid fa-id-badge"></i></span><span>لوحة التحكم</span></div>
+    <div class="admin-nav">
+      <button class="ghost small" onclick="goPublic()"><i class="fa-solid fa-eye"></i> شوف صفحة العميل</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <!-- Analytics Panel -->
+      <div class="panel">
+        <p class="eyebrow">إحصائيات البطاقة</p>
+        <h2>التفاعل والزيارات</h2>
+        <p class="sub">ملخص زيارات صفحة العميل وعدد النقرات على روابطك.</p>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="num" id="stat-views">0</div>
+            <div class="lbl">إجمالي المشاهدات</div>
+          </div>
+          <div class="stat-box">
+            <div class="num" id="stat-clicks">0</div>
+            <div class="lbl">إجمالي النقرات</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Identity Panel -->
+      <div class="panel">
+        <div class="field-block">
+          <p class="eyebrow">هوية البراند</p>
+          <h2>اللوجو والاسم</h2>
+          <p class="sub">دول هيظهروا فوق صفحة العميل النهائية.</p>
+          <div class="logo-row" style="margin-bottom:14px;">
+            <div class="logo-preview" id="logo-preview"><i class="fa-solid fa-image"></i></div>
+            <div class="logo-btns">
+              <input type="file" id="logo-file" accept="image/*" class="hidden" onchange="onLogoChosen(event)">
+              <button class="ghost small" onclick="document.getElementById('logo-file').click()">رفع لوجو</button>
+              <button class="ghost small" onclick="clearLogo()">إزالة</button>
+            </div>
+          </div>
+          <input type="text" id="profile-name" class="name-input" placeholder="اسم البراند" style="margin-bottom:10px;">
+          <textarea id="profile-tagline" class="name-input" placeholder="جملة قصيرة تحت الاسم (اختياري)" rows="2"></textarea>
+          <input type="text" id="profile-phone" class="name-input" placeholder="رقم الهاتف للواتساب / vCard (مثال: +2010xxxxxxx)" style="margin-top:10px;">
+        </div>
+
+        <div class="field-block">
+          <p class="eyebrow">الحسابات</p>
+          <h2>الروابط والمنصات</h2>
+          <p class="sub">فعّل أي حساب وحط لينكه، أو ضيف رابط مخصص من تحت.</p>
+          <div id="rows-holder"></div>
+          <div class="add-row">
+            <select id="new-platform">
+              <option value="">➕ اضف رابط مخصص</option>
+            </select>
+            <input type="text" id="new-label" placeholder="اسم الرابط">
+            <input type="url" id="new-url" placeholder="https://">
+            <button class="ghost" onclick="addCustomRow()">اضافة</button>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="primary" onclick="saveProfile()">حفظ البيانات</button>
+          <span class="status" id="save-status"></span>
+        </div>
+      </div>
+
+      <!-- Security Panel -->
+      <div class="panel">
+        <p class="eyebrow">الأمان</p>
+        <h2>الرقم السري للوحة</h2>
+        <p class="sub">تغيير الرقم السري لحماية لوحة التحكم.</p>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="password" id="new-pin-input" class="name-input" placeholder="رقم سري جديد (4 أرقام)" maxlength="6">
+          <button class="ghost" onclick="changePin()">تحديث PIN</button>
+        </div>
+        <span class="status" id="pin-status" style="margin-top:8px;"></span>
+      </div>
+    </div>
+
+    <!-- Preview Card -->
+    <div class="card-outer">
+      <div class="idcard" id="card">
+        <div class="hole"></div>
+        <div class="front-face" id="front-face">
+          <div class="avatar" id="avatar-init">؟</div>
+          <h3 id="card-name">اسم البراند</h3>
+          <p class="role">هيك هتبان صفحة العميل تقريباً</p>
+          <div class="icon-grid" id="preview-icons">
+            <div class="empty-note">مفيش روابط لسه<br>ضيف من لوحة التحكم</div>
+          </div>
+        </div>
+        <div class="qr-face" id="qr-face">
+          <h3 style="margin-bottom:3px;">باركود صفحة العميل</h3>
+          <p class="role">امسحه عشان يفتح صفحة العميل مباشرة</p>
+          <div id="qrcode"></div>
+          <div class="link-line" id="qr-link"></div>
+        </div>
+        <button class="ghost flip-btn" onclick="toggleFlip()" id="flip-btn"><i class="fa-solid fa-qrcode"></i> اعرض الباركود</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PUBLIC PAGE (PROFESSIONAL DESIGN) ============ -->
+<div id="view-public" class="public-shell hidden">
+  <div class="public-card-container">
+    <div class="pub-logo-wrap">
+      <div class="pub-logo" id="pub-logo">؟</div>
+    </div>
+    <h1 class="pub-name" id="pub-name">اسم البراند</h1>
+    <p class="pub-tagline hidden" id="pub-tagline"></p>
+    
+    <div class="pub-actions">
+      <button class="pub-btn-action" onclick="sharePage()"><i class="fa-solid fa-share-nodes"></i> مشاركة</button>
+      <button class="pub-btn-action" onclick="downloadVCard()"><i class="fa-solid fa-address-card"></i> حفظ الجهة</button>
+    </div>
+
+    <div class="tile-list" id="pub-icons">
+      <div class="empty-note">مفيش روابط متاحة دلوقتي</div>
+    </div>
+
+    <p class="pub-footer">بطاقتي © 2026</p>
+  </div>
+</div>
+
+<script>
+const PLATFORMS = [
+  {id:'instagram', label:'انستجرام', icon:'fa-brands fa-instagram', color:'#E1306C', dark:false},
+  {id:'facebook', label:'فيسبوك', icon:'fa-brands fa-facebook-f', color:'#1877F2', dark:false},
+  {id:'twitter', label:'اكس / تويتر', icon:'fa-brands fa-x-twitter', color:'#111111', dark:false},
+  {id:'tiktok', label:'تيك توك', icon:'fa-brands fa-tiktok', color:'#0D0D0D', dark:false},
+  {id:'youtube', label:'يوتيوب', icon:'fa-brands fa-youtube', color:'#FF0000', dark:false},
+  {id:'whatsapp', label:'واتساب', icon:'fa-brands fa-whatsapp', color:'#25D366', dark:true},
+  {id:'telegram', label:'تليجرام', icon:'fa-brands fa-telegram', color:'#29A9EA', dark:false},
+  {id:'snapchat', label:'سناب شات', icon:'fa-brands fa-snapchat', color:'#FFFC00', dark:true},
+  {id:'linkedin', label:'لينكدإن', icon:'fa-brands fa-linkedin-in', color:'#0A66C2', dark:false},
+];
+
+let profile = { name:'', tagline:'', phone:'', logo:'', links:[], views:0 };
+let flipped = false;
+
+function iconColor(dark){ return dark ? '#12141F' : '#F3EEE2'; }
+
+function baseUrlNoHash(){
+  return window.location.origin + window.location.pathname + window.location.search;
+}
+
+/* ---------- routing ---------- */
+function route(){
+  const hash = window.location.hash;
+  if(hash === '#admin'){
+    checkPinThenShowAdmin();
+  } else {
+    showOnly('view-public');
+    renderPublicPage();
+  }
+}
+function showOnly(id){
+  ['view-lock','view-dash','view-public'].forEach(v=>{
+    document.getElementById(v).classList.toggle('hidden', v!==id);
+  });
+}
+function goPublic(){ window.location.hash = ''; route(); }
+function goAdmin(){ window.location.hash = '#admin'; route(); }
+window.addEventListener('hashchange', route);
+
+/* ---------- pin gate & storage ---------- */
+function checkPinThenShowAdmin(){
+  const savedPin = localStorage.getItem('admin-pin');
+
+  if(!savedPin){
+    document.getElementById('lock-title').textContent = 'اعمل رقم سري للوحة التحكم';
+    document.getElementById('lock-desc').textContent = 'أول مرة؟ اختار رقم سري (4 أرقام على الأقل) عشان تحمي لوحة التحكم بتاعتك.';
+    document.getElementById('lock-btn').textContent = 'حفظ وإنشاء';
+  } else {
+    document.getElementById('lock-title').textContent = 'لوحة التحكم مقفولة';
+    document.getElementById('lock-desc').textContent = 'ادخل الرقم السري للدخول على اللوحة.';
+    document.getElementById('lock-btn').textContent = 'دخول';
+  }
+  document.getElementById('lock-err').textContent = '';
+  document.getElementById('pin-field').value = '';
+  showOnly('view-lock');
+}
+
+function submitPin(){
+  const val = document.getElementById('pin-field').value.trim();
+  const errEl = document.getElementById('lock-err');
+  const savedPin = localStorage.getItem('admin-pin');
+
+  if(val.length < 4){
+    errEl.textContent = 'الرقم لازم يكون 4 أرقام على الأقل';
+    return;
+  }
+  
+  if(!savedPin){
+    localStorage.setItem('admin-pin', val);
+    showAdmin();
+  } else if(val === savedPin){
+    showAdmin();
+  } else {
+    errEl.textContent = 'الرقم غلط، حاول تاني';
+  }
+}
+
+function changePin(){
+  const val = document.getElementById('new-pin-input').value.trim();
+  const status = document.getElementById('pin-status');
+  if(val.length < 4){
+    status.textContent = 'الرقم لازم يكون 4 أرقام على الأقل';
+    status.style.color = 'var(--coral)';
+    return;
+  }
+  localStorage.setItem('admin-pin', val);
+  status.textContent = 'تم تغيير الرقم السري بنجاح!';
+  status.style.color = 'var(--teal)';
+  document.getElementById('new-pin-input').value = '';
+  setTimeout(()=> status.textContent = '', 3000);
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Enter' && !document.getElementById('view-lock').classList.contains('hidden')){
+    submitPin();
+  }
+});
+
+function showAdmin(){
+  loadProfile();
+  renderQR();
+  showOnly('view-dash');
+}
+
+/* ---------- platform select + rows ---------- */
+function initPlatformSelect(){
+  const sel = document.getElementById('new-platform');
+  PLATFORMS.forEach(p=>{
+    const opt = document.createElement('option');
+    opt.value = p.id; opt.textContent = p.label;
+    sel.appendChild(opt);
+  });
+  const custom = document.createElement('option');
+  custom.value = '__custom__'; custom.textContent = 'رابط مخصص (بدون منصة)';
+  sel.appendChild(custom);
+}
+
+function ensureLinksHaveAllPlatforms(){
+  PLATFORMS.forEach(p=>{
+    if(!profile.links.find(l=>l.platformId===p.id)){
+      profile.links.push({platformId:p.id, label:p.label, url:'', enabled:false, custom:false, clicks:0});
+    }
+  });
+}
+
+function renderDashboardRows(){
+  const holder = document.getElementById('rows-holder');
+  holder.innerHTML = '';
+  profile.links.forEach((link, idx)=>{
+    const plat = PLATFORMS.find(p=>p.id===link.platformId);
+    const color = plat ? plat.color : '#C9A227';
+    const iconClass = plat ? plat.icon : 'fa-solid fa-link';
+    const fg = plat ? iconColor(plat.dark) : '#12141F';
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <div class="reorder-btns">
+        <button class="reorder-btn" onclick="moveLink(${idx}, -1)"><i class="fa-solid fa-chevron-up"></i></button>
+        <button class="reorder-btn" onclick="moveLink(${idx}, 1)"><i class="fa-solid fa-chevron-down"></i></button>
+      </div>
+      <div class="badge" style="background:${color};color:${fg};"><i class="${iconClass}"></i></div>
+      <div class="row-fields">
+        <div class="name-row">
+          <span class="name">${link.label}</span>
+          <span class="clicks">${link.clicks||0} نقرة</span>
+        </div>
+        <input type="url" placeholder="https://..." value="${link.url||''}" data-idx="${idx}" class="url-input">
+      </div>
+      <label class="switch">
+        <input type="checkbox" ${link.enabled?'checked':''} data-idx="${idx}" class="enable-toggle">
+        <span class="slider"></span>
+      </label>
+      ${link.custom ? `<button class="del-btn" onclick="removeRow(${idx})"><i class="fa-solid fa-xmark"></i></button>` : '<span style="width:27px;"></span>'}
+    `;
+    holder.appendChild(row);
+  });
+  holder.querySelectorAll('.url-input').forEach(inp=>{
+    inp.addEventListener('input', e=>{ profile.links[+e.target.dataset.idx].url = e.target.value; renderCardPreview(); });
+  });
+  holder.querySelectorAll('.enable-toggle').forEach(chk=>{
+    chk.addEventListener('change', e=>{ profile.links[+e.target.dataset.idx].enabled = e.target.checked; renderCardPreview(); });
+  });
+}
+
+function moveLink(idx, direction){
+  const newIndex = idx + direction;
+  if(newIndex < 0 || newIndex >= profile.links.length) return;
+  const temp = profile.links[idx];
+  profile.links[idx] = profile.links[newIndex];
+  profile.links[newIndex] = temp;
+  renderDashboardRows();
+  renderCardPreview();
+}
+
+function removeRow(idx){ profile.links.splice(idx,1); renderDashboardRows(); renderCardPreview(); }
+
+function addCustomRow(){
+  const sel = document.getElementById('new-platform');
+  const labelInp = document.getElementById('new-label');
+  const urlInp = document.getElementById('new-url');
+  const url = urlInp.value.trim();
+  if(!url) return;
+  const platId = sel.value;
+  if(platId && platId !== '__custom__'){
+    const existing = profile.links.find(l=>l.platformId===platId);
+    if(existing){ existing.url = url; existing.enabled = true; }
+  } else {
+    const label = labelInp.value.trim() || 'رابط';
+    profile.links.push({platformId:'custom-'+Date.now(), label, url, enabled:true, custom:true, clicks:0});
+  }
+  sel.value=''; labelInp.value=''; urlInp.value='';
+  renderDashboardRows();
+  renderCardPreview();
+}
+
+function initials(name){
+  const trimmed = (name||'').trim();
+  return trimmed ? trimmed.slice(0,1) : '؟';
+}
+
+/* ---------- logo ---------- */
+function onLogoChosen(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 1500000){
+    alert('اختار صورة أصغر من 1.5 ميجا لو سمحت');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    profile.logo = ev.target.result;
+    renderLogoPreview();
+    renderCardPreview();
+  };
+  reader.readAsDataURL(file);
+}
+function clearLogo(){
+  profile.logo = '';
+  renderLogoPreview();
+  renderCardPreview();
+}
+function renderLogoPreview(){
+  const el = document.getElementById('logo-preview');
+  el.innerHTML = profile.logo ? `<img src="${profile.logo}">` : '<i class="fa-solid fa-image"></i>';
+}
+
+/* ---------- admin preview card & stats ---------- */
+function renderCardPreview(){
+  document.getElementById('card-name').textContent = profile.name || 'اسم البراند';
+  const avatarEl = document.getElementById('avatar-init');
+  avatarEl.innerHTML = profile.logo ? `<img src="${profile.logo}">` : initials(profile.name);
+
+  const active = profile.links.filter(l=>l.enabled && l.url);
+  const iconsHtml = active.length ? active.map(l=>{
+    const plat = PLATFORMS.find(p=>p.id===l.platformId);
+    const color = plat ? plat.color : '#C9A227';
+    const iconClass = plat ? plat.icon : 'fa-solid fa-link';
+    const fg = plat ? iconColor(plat.dark) : '#12141F';
+    return `<a class="icon-btn" style="background:${color};color:${fg};" href="${l.url}" target="_blank" rel="noopener" title="${l.label}"><i class="${iconClass}"></i></a>`;
+  }).join('') : '<div class="empty-note">مفيش روابط لسه<br>ضيف من لوحة التحكم</div>';
+  document.getElementById('preview-icons').innerHTML = iconsHtml;
+
+  // Stats Update
+  document.getElementById('stat-views').textContent = profile.views || 0;
+  const totalClicks = (profile.links||[]).reduce((sum, l) => sum + (l.clicks||0), 0);
+  document.getElementById('stat-clicks').textContent = totalClicks;
+}
+
+function renderQR(){
+  const holder = document.getElementById('qrcode');
+  holder.innerHTML = '';
+  const url = baseUrlNoHash();
+  document.getElementById('qr-link').textContent = url;
+  try{
+    new QRCode(holder, { text: url, width:150, height:150, colorDark:'#12141F', colorLight:'#ffffff' });
+  }catch(e){
+    holder.innerHTML = '<span style="font-size:12px;color:var(--cream-dim)">تعذر توليد الباركود</span>';
+  }
+}
+
+function toggleFlip(){
+  flipped = !flipped;
+  document.getElementById('front-face').classList.toggle('hide', flipped);
+  document.getElementById('qr-face').classList.toggle('show', flipped);
+  document.getElementById('flip-btn').innerHTML = flipped
+    ? '<i class="fa-solid fa-arrow-rotate-right"></i> ارجع للأيقونات'
+    : '<i class="fa-solid fa-qrcode"></i> اعرض الباركود';
+}
+
+/* ---------- public page & clicks ---------- */
+function trackClick(idx){
+  profile.links[idx].clicks = (profile.links[idx].clicks || 0) + 1;
+  localStorage.setItem('profile-links', JSON.stringify(profile));
+}
+
+function renderPublicPage(){
+  loadProfileDataOnly();
+  
+  // Track View
+  profile.views = (profile.views || 0) + 1;
+  localStorage.setItem('profile-links', JSON.stringify(profile));
+
+  document.getElementById('pub-name').textContent = profile.name || 'اسم البراند';
+  const logoEl = document.getElementById('pub-logo');
+  logoEl.innerHTML = profile.logo ? `<img src="${profile.logo}">` : initials(profile.name);
+
+  const tagEl = document.getElementById('pub-tagline');
+  if(profile.tagline){ tagEl.textContent = profile.tagline; tagEl.classList.remove('hidden'); }
+  else { tagEl.classList.add('hidden'); }
+
+  const active = (profile.links||[]).filter(l=>l.enabled && l.url);
+  const tilesHtml = active.length ? active.map(l=>{
+    const originalIdx = profile.links.findIndex(link => link.platformId === l.platformId);
+    const plat = PLATFORMS.find(p=>p.id===l.platformId);
+    const color = plat ? plat.color : '#C9A227';
+    const iconClass = plat ? plat.icon : 'fa-solid fa-link';
+    const fg = plat ? iconColor(plat.dark) : '#12141F';
+    return `<a class="pub-tile" href="${l.url}" target="_blank" rel="noopener" onclick="trackClick(${originalIdx})">
+      <div class="tile-left">
+        <span class="tile-icon" style="background:${color};color:${fg};"><i class="${iconClass}"></i></span>
+        <span class="tile-label">${l.label}</span>
+      </div>
+      <span class="tile-arrow"><i class="fa-solid fa-chevron-left"></i></span>
+    </a>`;
+  }).join('') : '<div class="empty-note">مفيش روابط متاحة دلوقتي</div>';
+  document.getElementById('pub-icons').innerHTML = tilesHtml;
+}
+
+/* ---------- Share & vCard ---------- */
+function sharePage(){
+  if(navigator.share){
+    navigator.share({
+      title: profile.name || 'بطاقتي',
+      text: profile.tagline || 'شاهد جميع حساباتي وتواصل معي!',
+      url: baseUrlNoHash()
+    }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(baseUrlNoHash());
+    alert('تم نسخ رابط البطاقة بنجاح!');
+  }
+}
+
+function downloadVCard(){
+  const name = profile.name || 'جهة اتصال';
+  const phone = profile.phone || '';
+  const note = profile.tagline || '';
+  
+  const vcard = 
+`BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+TEL;TYPE=CELL:${phone}
+NOTE:${note}
+URL:${baseUrlNoHash()}
+END:VCARD`;
+
+  const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.setAttribute('download', `${name}.vcf`);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+/* ---------- save / load ---------- */
+function saveProfile(){
+  profile.name = document.getElementById('profile-name').value.trim();
+  profile.tagline = document.getElementById('profile-tagline').value.trim();
+  profile.phone = document.getElementById('profile-phone').value.trim();
+  
+  const statusEl = document.getElementById('save-status');
+  statusEl.innerHTML = 'جاري الحفظ...';
+  
+  localStorage.setItem('profile-links', JSON.stringify(profile));
+  
+  statusEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> تم الحفظ';
+  statusEl.className = 'status ok';
+  renderCardPreview();
+  setTimeout(()=>{ statusEl.textContent=''; }, 3000);
+}
+
+function loadProfileDataOnly(){
+  const saved = localStorage.getItem('profile-links');
+  if(saved){
+    try {
+      const loaded = JSON.parse(saved);
+      profile.name = loaded.name || '';
+      profile.tagline = loaded.tagline || '';
+      profile.phone = loaded.phone || '';
+      profile.logo = loaded.logo || '';
+      profile.links = loaded.links || [];
+      profile.views = loaded.views || 0;
+    } catch(e){}
+  }
+}
+
+function loadProfile(){
+  loadProfileDataOnly();
+  ensureLinksHaveAllPlatforms();
+  document.getElementById('profile-name').value = profile.name || '';
+  document.getElementById('profile-tagline').value = profile.tagline || '';
+  document.getElementById('profile-phone').value = profile.phone || '';
+  renderLogoPreview();
+  renderDashboardRows();
+  renderCardPreview();
+}
+
+initPlatformSelect();
+route();
+</script>
+</body>
+</html>
